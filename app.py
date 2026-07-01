@@ -5,23 +5,22 @@ import numpy as np
 
 app = Flask(__name__)
 
-# Model aur Encoders load karein
+# load Model 
 model = pickle.load(open("travel_recommend.pkl", "rb"))
 label_encoders = pickle.load(open("travel_encoders.pkl", "rb"))
 
-# Notebook ke dataframes ki tarah data load karein taaki exact dynamic dropdowns banein
 try:
     destination_df = pd.read_csv('Expanded_Destinations.csv')
     user_df = pd.read_csv('Final_Updated_Expanded_Users.csv')
     
-    # Dropdown ke liye saari unique values extract karein
+    
     destinations_list = sorted(destination_df['Name'].unique())
     states_list = sorted(destination_df['State'].unique())
     types_list = sorted(destination_df['Type'].unique())
     times_list = sorted(destination_df['BestTimeToVisit'].unique())
     preferences_list = sorted(user_df['Preferences'].dropna().unique())
 except Exception as e:
-    # Fallback lists (Testing ke liye agar files read na ho payein)
+    # Fallback lists 
     destinations_list = ['Taj Mahal', 'Goa Beaches', 'Jaipur City', 'Kerala Backwaters', 'Leh Ladakh', 'Shimla Hills']
     states_list = ['Uttar Pradesh', 'Goa', 'Rajasthan', 'Kerala', 'Jammu and Kashmir', 'Himachal Pradesh']
     types_list = ['Historical', 'Beach', 'City', 'Nature', 'Adventure']
@@ -54,7 +53,7 @@ def home():
             'NumberOfChildren': int(request.form.get('NumberOfChildren'))
         }
         
-        # --- 1. CURRENT USER SELECTION POPULARITY ---
+        # CURRENT USER SELECTION POPULARITY 
         input_df = pd.DataFrame([user_input])
         for col in features:
             if col in label_encoders:
@@ -67,15 +66,15 @@ def home():
         input_df = input_df[features]
         user_popularity = round(model.predict(input_df)[0], 2)
         
-        # --- 2. TOP 5 COLLABORATIVE RECOMMENDATIONS ---
-        # Content Type ke filter se top 5 destinations filter karna (Notebook logic simulator)
+        # TOP 5 COLLABORATIVE RECOMMENDATIONS
+       
         try:
             matched_places = destination_df[destination_df['Type'].str.lower() == selected_type.lower()].head(5)
             if len(matched_places) < 5:
                 extra_places = destination_df[destination_df['Type'].str.lower() != selected_type.lower()].head(5 - len(matched_places))
                 matched_places = pd.concat([matched_places, extra_places])
         except:
-            # Fallback mock dataframe agar dynamic check custom tables par crash ho
+            
             matched_places = pd.DataFrame([
                 {'Name': 'Taj Mahal', 'State': 'Uttar Pradesh', 'Type': 'Historical', 'BestTimeToVisit': 'Nov-Feb', 'Preferences': 'City, Historical'},
                 {'Name': 'Goa Beaches', 'State': 'Goa', 'Type': 'Beach', 'BestTimeToVisit': 'Nov-Mar', 'Preferences': 'Beaches, Historical'},

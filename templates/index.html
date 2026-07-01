@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Travel AI Planner</title>
+    <title>Travel Recommendation System</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -61,7 +61,7 @@
 <div class="wrapper">
     <!-- Left Sidebar Input Panel Form -->
     <div class="form-panel">
-        <h2>✈️ Travel Engine</h2>
+        <h2>Travel Recommendation & Popularity System</h2>
         <form action="/" method="POST">
             <div class="form-group">
                 <label>User ID:</label>
@@ -153,20 +153,20 @@
 
             <!-- Recommendation Grid List -->
             <div class="rec-section">
-                <h3>🎯 Recommended Alternates with Popularity</h3>
+                <h3> Recommended Alternates with Popularity</h3>
                 <div class="rec-grid">
                     {% for place in recommendations %}
                     <div class="rec-card">
                         <div class="rec-details">
                             <h4>{{ place.name }}</h4>
                             <div class="rec-meta">
-                                <span class="badge">📍 {{ place.state }}</span>
-                                <span class="badge">🎭 {{ place.type }}</span>
-                                <span class="badge">📅 {{ place.best_time }}</span>
+                                <span class="badge"> {{ place.state }}</span>
+                                <span class="badge"> {{ place.type }}</span>
+                                <span class="badge"> {{ place.best_time }}</span>
                             </div>
                         </div>
                         <div class="score-container">
-                            <div class="score-badge">⭐ {{ place.score }}</div>
+                            <div class="score-badge"> {{ place.score }}</div>
                         </div>
                     </div>
                     {% endfor %}
@@ -175,7 +175,7 @@
         {% else %}
             <!-- Initial Welcome State View -->
             <div class="welcome-view">
-                <div style="font-size: 60px; margin-bottom: 20px;">🗺️</div>
+                <div style="font-size: 60px; margin-bottom: 20px;"></div>
                 <h3 style="color: #111827; font-size: 22px; font-weight: 700;">Travel Intelligence Hub</h3>
                 <p style="margin-top: 8px; font-size: 14px; max-width: 500px; line-height: 1.5;">Select user attributes and preferences on the sidebar menu. The intelligence engine will instantly output target popularity analysis alongside item predictions.</p>
             </div>
