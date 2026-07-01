@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Travel AI Planner</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f3f4f6;
+            --panel-bg: #ffffff;
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --accent-green: #10b981;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; padding: 40px 20px; }
+        
+        .wrapper { max-width: 1300px; margin: 0 auto; display: grid; grid-template-columns: 420px 1fr; gap: 35px; }
+        
+        /* Left Panel */
+        .form-panel { background: var(--panel-bg); padding: 30px; border-radius: 24px; box-shadow: var(--shadow); height: fit-content; border: 1px solid rgba(0,0,0,0.03); }
+        h2 { font-size: 24px; font-weight: 700; margin-bottom: 25px; color: var(--primary); }
+        .form-group { margin-bottom: 18px; }
+        label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #374151; }
+        input, select { width: 100%; padding: 12px; border: 1px solid #e5e7eb; border-radius: 12px; font-size: 14px; background-color: #f9fafb; transition: all 0.2s; color: #111827; }
+        input:focus, select:focus { outline: none; border-color: var(--primary); background-color: #fff; box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1); }
+        button { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; transition: background 0.2s; margin-top: 10px; }
+        button:hover { background: var(--primary-hover); }
+        
+        /* Right Panel */
+        .dashboard-panel { display: flex; flex-direction: column; gap: 30px; }
+        .welcome-view { background: white; padding: 70px; border-radius: 24px; text-align: center; box-shadow: var(--shadow); color: var(--text-muted); display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; }
+        
+        /* User Specific Hero Banner Card */
+        .target-user-card { background: linear-gradient(135deg, #4f46e5, #7c3aed); color: white; padding: 30px; border-radius: 24px; box-shadow: var(--shadow); display: flex; justify-content: space-between; align-items: center; position: relative; overflow: hidden; }
+        .target-info h3 { font-size: 22px; margin-bottom: 6px; font-weight: 700; }
+        .target-info p { opacity: 0.85; font-size: 14px; }
+        .target-score { background: rgba(255, 255, 255, 0.18); padding: 16px 28px; border-radius: 16px; text-align: center; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); }
+        .target-score .num { font-size: 34px; font-weight: 800; }
+        .target-score .label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; opacity: 0.9; }
+
+        /* Bottom Section Grid cards */
+        .rec-section h3 { font-size: 20px; font-weight: 700; margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
+        .rec-grid { display: flex; flex-direction: column; gap: 16px; }
+        
+        .rec-card { background: white; padding: 22px; border-radius: 18px; box-shadow: var(--shadow); display: flex; justify-content: space-between; align-items: center; border-left: 6px solid #e5e7eb; transition: transform 0.2s, border-left-color 0.2s; }
+        .rec-card:hover { transform: translateX(6px); border-left-color: var(--primary); }
+        .rec-details h4 { font-size: 18px; font-weight: 700; margin-bottom: 6px; color: var(--text-main); }
+        .rec-meta { display: flex; gap: 10px; font-size: 13px; color: var(--text-muted); flex-wrap: wrap; }
+        .badge { background: #f3f4f6; padding: 4px 10px; border-radius: 8px; font-weight: 500; color: #4b5563; }
+        .score-badge { background-color: #e6f4ea; color: var(--accent-green); padding: 10px 20px; border-radius: 12px; font-weight: 700; font-size: 16px; display: inline-block; box-shadow: 0 2px 5px rgba(16,185,129,0.1); }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <!-- Left Sidebar Input Panel Form -->
+    <div class="form-panel">
+        <h2>✈️ Travel Engine</h2>
+        <form action="/" method="POST">
+            <div class="form-group">
+                <label>User ID:</label>
+                <input type="text" name="UserID" placeholder="Enter User ID (e.g., 327)" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Destination Name:</label>
+                <select name="Name_x" required>
+                    {% for dest in destinations %}
+                        <option value="{{ dest }}">{{ dest }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Destination Type:</label>
+                <select name="Type" required>
+                    {% for t in types %}
+                        <option value="{{ t }}">{{ t }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>State:</label>
+                <select name="State" required>
+                    {% for s in states %}
+                        <option value="{{ s }}">{{ s }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Best Time to Visit:</label>
+                <select name="BestTimeToVisit" required>
+                    {% for tm in times %}
+                        <option value="{{ tm }}">{{ tm }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>User Preferences:</label>
+                <select name="Preferences" required>
+                    {% for pref in preferences %}
+                        <option value="{{ pref }}">{{ pref }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Gender:</label>
+                <select name="Gender">
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div class="form-group">
+                    <label>Adults:</label>
+                    <input type="number" name="NumberOfAdults" value="1" min="1">
+                </div>
+                <div class="form-group">
+                    <label>Children:</label>
+                    <input type="number" name="NumberOfChildren" value="0" min="0">
+                </div>
+            </div>
+            <button type="submit">Analyze & Recommend</button>
+        </form>
+    </div>
+
+    <!-- Right Side Output Dashboard Visuals -->
+    <div class="dashboard-panel">
+        {% if user_popularity %}
+            <!-- Top Target User Separate Score Card -->
+            <div class="target-user-card">
+                <div class="target-info">
+                    <p style="text-transform: uppercase; font-size: 11px; tracking-letter: 1px; font-weight: 700; margin-bottom: 2px; opacity: 0.8;">Live Diagnostics</p>
+                    <h3>User ID Dashboard: {{ user_id }}</h3>
+                    <p style="margin-top: 8px;">Target Selection: <span style="background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 6px;">{{ selected_dest }}</span></p>
+                </div>
+                <div class="target-score">
+                    <div class="num">⭐ {{ user_popularity }}</div>
+                    <div class="label">Predicted Score</div>
+                </div>
+            </div>
+
+            <!-- Recommendation Grid List -->
+            <div class="rec-section">
+                <h3>🎯 Recommended Alternates with Popularity</h3>
+                <div class="rec-grid">
+                    {% for place in recommendations %}
+                    <div class="rec-card">
+                        <div class="rec-details">
+                            <h4>{{ place.name }}</h4>
+                            <div class="rec-meta">
+                                <span class="badge">📍 {{ place.state }}</span>
+                                <span class="badge">🎭 {{ place.type }}</span>
+                                <span class="badge">📅 {{ place.best_time }}</span>
+                            </div>
+                        </div>
+                        <div class="score-container">
+                            <div class="score-badge">⭐ {{ place.score }}</div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% else %}
+            <!-- Initial Welcome State View -->
+            <div class="welcome-view">
+                <div style="font-size: 60px; margin-bottom: 20px;">🗺️</div>
+                <h3 style="color: #111827; font-size: 22px; font-weight: 700;">Travel Intelligence Hub</h3>
+                <p style="margin-top: 8px; font-size: 14px; max-width: 500px; line-height: 1.5;">Select user attributes and preferences on the sidebar menu. The intelligence engine will instantly output target popularity analysis alongside item predictions.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+</body>
+</html>
